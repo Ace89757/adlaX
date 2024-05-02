@@ -4,5 +4,6 @@
 
 from mmengine.registry import Registry
 
-RUNNERs = Registry('runner', locations=['alchemy.engine'])
 MODELs = Registry('model', locations=['alchemy.models'])
+RUNNERs = Registry('runner', locations=['alchemy.engine'])
+DATASETs = Registry('model', locations=['alchemy.datasets'])
