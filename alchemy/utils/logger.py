@@ -11,7 +11,7 @@ from loguru import logger
 
 __all__ = [
     'setup_logger',
-    'heading', 'subheading'
+    'heading', 'subheading', 'keyinfo'
     ]
 
 
@@ -98,6 +98,7 @@ def setup_logger(work_dir, filename='log.txt'):
         filter=lambda record: record["level"].name == "INFO", format=info_format)
     logger.add(
         sink=log_file,
+        colorize=False,
         level="INFO",
         filter=lambda record: record["level"].name == "INFO", format=info_format)
     
@@ -113,6 +114,7 @@ def setup_logger(work_dir, filename='log.txt'):
         filter=lambda record: record["level"].name == "WARNING", format=warning_format)
     logger.add(
         sink=log_file,
+        colorize=False,
         level="WARNING",
         filter=lambda record: record["level"].name == "WARNING", format=warning_format)
     
@@ -129,6 +131,7 @@ def setup_logger(work_dir, filename='log.txt'):
         filter=lambda record: record["level"].name == "ERROR", format=error_format)
     logger.add(
         sink=log_file,
+        colorize=False,
         level="ERROR",
         filter=lambda record: record["level"].name == "ERROR", format=error_format)
     
@@ -144,6 +147,7 @@ def setup_logger(work_dir, filename='log.txt'):
         filter=lambda record: record["level"].name == "DEBUG", format=debug_format)
     logger.add(
         sink=log_file,
+        colorize=False,
         level="DEBUG",
         filter=lambda record: record["level"].name == "DEBUG", format=debug_format)
     
@@ -159,6 +163,7 @@ def setup_logger(work_dir, filename='log.txt'):
         filter=lambda record: record["level"].name == "SUCCESS", format=success_format)
     logger.add(
         sink=log_file,
+        colorize=False,
         level="SUCCESS",
         filter=lambda record: record["level"].name == "SUCCESS", format=success_format)
 
@@ -175,6 +180,7 @@ def setup_logger(work_dir, filename='log.txt'):
         filter=lambda record: record["level"].name == "TRACE", format=trace_format)
     logger.add(
         sink=log_file,
+        colorize=False,
         level="TRACE",
         filter=lambda record: record["level"].name == "TRACE", format=trace_format)
     
@@ -191,6 +197,7 @@ def setup_logger(work_dir, filename='log.txt'):
         filter=lambda record: record["level"].name == "CRITICAL", format=critical_format)
     logger.add(
         sink=log_file,
+        colorize=False,
         level="CRITICAL",
         filter=lambda record: record["level"].name == "CRITICAL", format=critical_format)
 
@@ -207,6 +214,7 @@ def setup_logger(work_dir, filename='log.txt'):
         filter=lambda record: record["level"].name == "HEADING", format=heading_format)
     logger.add(
         sink=log_file,
+        colorize=False,
         level="HEADING",
         filter=lambda record: record["level"].name == "HEADING", format=heading_format)
 
@@ -223,8 +231,26 @@ def setup_logger(work_dir, filename='log.txt'):
         filter=lambda record: record["level"].name == "SUBHEADING", format=subheading_format)
     logger.add(
         sink=log_file,
+        colorize=False,
         level="SUBHEADING",
         filter=lambda record: record["level"].name == "SUBHEADING", format=subheading_format)
+    
+    # 设置key-info日志处理程序 (KEYINFO (22): 用于高亮显示一些关键信息)
+    logger.level('KEYINFO', no=22, color="<yellow>", icon='@')
+    keyinfo_format = (
+        '<green>{time:YYYY-MM-DD HH:mm:ss}</green> | '
+        '<white>{level:>10}</white> | '
+        '<blue>===> {message}:</blue> <white>{extra[value]}</white>'
+    )
+    logger.add(
+        sink=sys.stderr,
+        level="KEYINFO",
+        filter=lambda record: record["level"].name == "KEYINFO", format=keyinfo_format)
+    logger.add(
+        sink=log_file,
+        level="KEYINFO",
+        colorize=False,
+        filter=lambda record: record["level"].name == "KEYINFO", format=keyinfo_format)
 
     # 重定向系统输出到loguru
     redirect_logger = StreamToLoguru("INFO")
@@ -246,3 +272,7 @@ def heading(string):
 
 def subheading(string):
     logger.log('SUBHEADING', format_string(string, mode='subheading'))
+
+
+def keyinfo(key_string, value_string=''):
+    logger.log('KEYINFO', key_string, value=value_string)
