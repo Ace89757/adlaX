@@ -12,7 +12,7 @@ from loguru import logger
 from mmengine.config import Config, DictAction
 
 from alchemy.registry import RUNNERs
-from alchemy.utils import setup_logger, get_env_info
+from alchemy.utils import setupLogger, getEnvInfo, printHeading
 
 
 def parse_args():
@@ -89,13 +89,13 @@ def main():
         if args.work_dir is not None:
             root_dir = args.work_dir
 
-        cfg.work_dir = os.path.join(root_dir, 'train', args.task, args.exp_name, date)
+        cfg.work_dir = os.path.join(root_dir, 'train', args.task, args.exp_name, date[:-4])
         cfg.load_from = args.pretrained
 
     cfg.task_prefix = f'{args.task}_{args.exp_name}'
 
     # logger
-    setup_logger(cfg.work_dir, filename=f'log.train.{date[:-4]}{".resume"if cfg.resume else ""}.log')
+    setupLogger(cfg.work_dir, filename=f'log.train.{date}{".resume" if cfg.resume else ""}.log')
 
     # enable scaling lr
     if args.auto_scale_lr:
@@ -118,9 +118,11 @@ def main():
         )
 
     # environments
-    get_env_info(cfg.work_dir)
+    printHeading('environments')
+    getEnvInfo(cfg.work_dir)
 
     # runner
+    printHeading('runner')
     runner_cfg = cfg.pop('runner_cfg', dict(type='base'))
     runner_cfg.update(cfg=cfg, command='train')
     runner = RUNNERs.build(runner_cfg)

@@ -7,20 +7,18 @@ import os
 from loguru import logger
 from mmengine.utils.dl_utils import collect_env
 
-from .logger import heading
+from .logger import printHeading
 
 
 __all__ = [
-    'get_env_info'
+    'getEnvInfo'
 ]
 
 
-def get_env_info(work_dir=None):
+def getEnvInfo(work_dir=None):
     """
     获取运行环境相关信息，并保存相关环境信息
     """
-    heading('running environments')
-
     # 通过mmengine获取环境信息
     env_info = collect_env()
 

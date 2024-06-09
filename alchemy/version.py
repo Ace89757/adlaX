@@ -6,7 +6,7 @@ __version__ = '1.0.0'
 short_version = __version__
 
 
-def parse_version_info(version_str):
+def parseVersionInfo(version_str):
     """Parse a version string into a tuple.
 
     Args:
@@ -26,4 +26,4 @@ def parse_version_info(version_str):
     return tuple(version_info)
 
 
-version_info = parse_version_info(__version__)
+version_info = parseVersionInfo(__version__)

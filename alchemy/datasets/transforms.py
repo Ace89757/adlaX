@@ -9,7 +9,7 @@ import numpy as np
 
 from loguru import logger
 
-from alchemy.utils import keyinfo
+from alchemy.utils import printArgs, printSubheading2
 from alchemy.registry import TRANSFORMs
 
 
@@ -25,12 +25,12 @@ class Compose:
     """
 
     def __init__(self, transforms):
+        printSubheading2('pipeline')
         self.transforms = []
 
         if transforms is None:
             transforms = []
 
-        keyinfo(key_string='transforms')
         for transform in transforms:
             # Compose can be built with config dict with type and corresponding arguments.
             if isinstance(transform, dict):
@@ -44,7 +44,7 @@ class Compose:
 
             else:
                 raise TypeError(f'transform must be a callable object or dict, but got {type(transform)}')
-            logger.info(f'\t{transform}')
+            logger.info(transform)
 
     def __call__(self, sample):
         """
@@ -90,7 +90,7 @@ class LetterBox:
         self.gt_keys = ('gt_bboxes', )
     
     @staticmethod
-    def _random_interp_method():
+    def _randomInterpMethod():
         """
         Randomly select an interp method from given candidates.
 
@@ -120,7 +120,7 @@ class LetterBox:
                 img_resized = cv2.resize(
                     sample['img'], 
                     (math.ceil(raw_img_w * scale_w), math.ceil(raw_img_h * scale_h)), 
-                    interpolation=self._random_interp_method() if self.random_interp else cv2.INTER_LINEAR)
+                    interpolation=self._randomInterpMethod() if self.random_interp else cv2.INTER_LINEAR)
             
                 sample['img'] = img_resized
 
@@ -160,7 +160,7 @@ class LetterBox:
         exit()
 
 
-@TRANSFORMs.register_module('normalization')
+@TRANSFORMs.register_module('normalize')
 class Normalization:
     def __init__(self, mean=[0, 0, 0], std=[1, 1, 1], normalize=True) -> None:
         self.normalize = normalize

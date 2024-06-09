@@ -10,8 +10,8 @@ from loguru import logger
 
 
 __all__ = [
-    'setup_logger',
-    'heading', 'subheading', 'keyinfo'
+    'setupLogger',
+    'printHeading', 'printSubheading', 'printSubheading2', 'printArgs'
     ]
 
 
@@ -61,7 +61,7 @@ class StreamToLoguru:
         pass
 
 
-def setup_logger(work_dir, filename='log.txt'):
+def setupLogger(work_dir, filename='log.txt'):
     """
     配置程序运行中产生的任何信息的输出格式，输出到终端，以及写入日志文件
     Args:
@@ -89,7 +89,7 @@ def setup_logger(work_dir, filename='log.txt'):
     # 设置info-level日志处理程序 (INFO (20): 用于记录描述程序正常操作的信息消息)
     info_format = (
         '<green>{time:YYYY-MM-DD HH:mm:ss}</green> | '
-        '<white>{level:>10}</white> | '
+        '<white>{level:>12}</white> | '
         '<white>{message}</white>'
         )
     logger.add(
@@ -105,7 +105,7 @@ def setup_logger(work_dir, filename='log.txt'):
     # 设置warning-level日志处理程序 (WARNING (30): 警告类型，用于指示可能需要进一步调查的不寻常事件)
     warning_format = (
         '<green>{time:YYYY-MM-DD HH:mm:ss}</green> | '
-        '<yellow><level>{level:>10}</level></yellow> | '
+        '<yellow><level>{level:>12}</level></yellow> | '
         '<yellow><level>{module}</level></yellow>:<yellow><level>{line}</level></yellow> - <yellow><level>{message}</level></yellow>'
         )
     logger.add(
@@ -121,7 +121,7 @@ def setup_logger(work_dir, filename='log.txt'):
     # 设置error-level日志处理程序 (ERROR (40): 错误类型，用于记录影响特定操作的错误条件) (格式里面添加了process和thread记录，方便查看多进程和线程程序)
     error_format = (
         '<green>{time:YYYY-MM-DD HH:mm:ss}</green> | '
-        '<red><level>{level:>10}</level></red> | '
+        '<red><level>{level:>12}</level></red> | '
         '<magenta>{process}</magenta>:<yellow>{thread}</yellow> | '
         '<red><level>{module}</level></red>:<red><level>{line}</level></red> - <red><level>{message}</level></red>'
         )
@@ -138,7 +138,7 @@ def setup_logger(work_dir, filename='log.txt'):
     # 设置debug-level日志处理程序 (DEBUG (10): 开发人员使用该工具记录调试信息)
     debug_format = (
         '<green>{time:YYYY-MM-DD HH:mm:ss}</green> | '
-        '<blue>{level:>10}</blue> | '
+        '<blue>{level:>12}</blue> | '
         '<blue>{module}</blue>:<blue>{line}</blue> - <blue>{message}</blue>'
         )
     logger.add(
@@ -154,7 +154,7 @@ def setup_logger(work_dir, filename='log.txt'):
     # 设置success-level日志处理程序 (SUCCESS (25): 类似于INFO，用于指示操作成功的情况。)
     success_format = (
         '<green>{time:YYYY-MM-DD HH:mm:ss}</green> | '
-        '<green>{level:>10}</green> | '
+        '<green>{level:>12}</green> | '
         '<green>{message}</green>'
         )
     logger.add(
@@ -170,7 +170,7 @@ def setup_logger(work_dir, filename='log.txt'):
     # 设置trace-level日志处理程序 (TRACE (5): 用于记录程序执行路径的细节信息，以进行诊断) (格式里面添加了process和thread记录，方便查看多进程和线程程序)
     trace_format = (
         '<green>{time:YYYY-MM-DD HH:mm:ss}</green> | '
-        '<magenta><level>{level:>10}</level></magenta> | '
+        '<magenta><level>{level:>12}</level></magenta> | '
         '<magenta>{process}</magenta>:<magenta>{thread}</magenta> | '
         '<magenta><level>{module}</level></magenta>:<magenta><level>{line}</level></magenta> - <magenta><level>{message}</level></magenta>'
         )
@@ -187,7 +187,7 @@ def setup_logger(work_dir, filename='log.txt'):
     # 设置critical-level日志处理程序 (CRITICAL (50): 严重类型，用于记录阻止核心功能正常工作的错误条件) (格式里面添加了process和thread记录，方便查看多进程和线程程序)
     critical_format = (
         '<green>{time:YYYY-MM-DD HH:mm:ss}</green> | '
-        '<red><level>{level:>10}</level></red> | '
+        '<red><level>{level:>12}</level></red> | '
         '<red>{process}</red>:<red>{thread}</red> | '
         '<red><level>{module}</level></red>:<red><level>{line}</level></red> - <red><level>{message}</level></red>'
         )
@@ -201,29 +201,29 @@ def setup_logger(work_dir, filename='log.txt'):
         level="CRITICAL",
         filter=lambda record: record["level"].name == "CRITICAL", format=critical_format)
 
-    # 设置heading-level日志处理程序 (HEADING (25): 用于记录描述程序正常操作的信息消息)
+    # 设置heading日志处理程序 (HEADING (25): 用于记录描述程序正常操作的信息消息)
     logger.level('HEADING', no=25, color="<blue>", icon="@")
-    heading_format = (
+    heading_fromat = (
         '<green>{time:YYYY-MM-DD HH:mm:ss}</green> | '
-        '<magenta>{level:>10}</magenta> | '
+        '<magenta>{level:>12}</magenta> | '
         '<magenta>{message}</magenta>'
         )
     logger.add(
         sink=sys.stderr,
         level="HEADING",
-        filter=lambda record: record["level"].name == "HEADING", format=heading_format)
+        filter=lambda record: record["level"].name == "HEADING", format=heading_fromat)
     logger.add(
         sink=log_file,
         colorize=False,
         level="HEADING",
-        filter=lambda record: record["level"].name == "HEADING", format=heading_format)
+        filter=lambda record: record["level"].name == "HEADING", format=heading_fromat)
 
-    # 设置subheading-level日志处理程序 (SUBHEADING (23): 用于记录描述程序正常操作的信息消息)
-    logger.level('SUBHEADING', no=23, color="<blue>", icon='@')
+    # 设置SUBHEADING日志处理程序 (SUBHEADING (24): 用于记录描述程序正常操作的信息消息)
+    logger.level('SUBHEADING', no=24, color="<blue>", icon='@')
     subheading_format = (
         '<green>{time:YYYY-MM-DD HH:mm:ss}</green> | '
-        '<cyan>{level:>10}</cyan> | '
-        '<cyan>{message}</cyan>'
+        '<blue>{level:>12}</blue> | '
+        '<blue>{message}</blue>'
         )
     logger.add(
         sink=sys.stderr,
@@ -235,22 +235,39 @@ def setup_logger(work_dir, filename='log.txt'):
         level="SUBHEADING",
         filter=lambda record: record["level"].name == "SUBHEADING", format=subheading_format)
     
-    # 设置key-info日志处理程序 (KEYINFO (22): 用于高亮显示一些关键信息)
-    logger.level('KEYINFO', no=22, color="<yellow>", icon='@')
+    # 设置SUBHEADING2日志处理程序 (SUBHEADING2 (23): 用于记录描述程序正常操作的信息消息)
+    logger.level('SUBHEADING2', no=23, color="<blue>", icon='@')
+    subheading2_format = (
+        '<green>{time:YYYY-MM-DD HH:mm:ss}</green> | '
+        '<cyan>{level:>12}</cyan> | '
+        '<cyan>{message}</cyan>'
+        )
+    logger.add(
+        sink=sys.stderr,
+        level="SUBHEADING2",
+        filter=lambda record: record["level"].name == "SUBHEADING2", format=subheading2_format)
+    logger.add(
+        sink=log_file,
+        colorize=False,
+        level="SUBHEADING2",
+        filter=lambda record: record["level"].name == "SUBHEADING2", format=subheading2_format)
+    
+    # 设置PARAMETER日志处理程序 (PARAMETER (22): 用于高亮显示一些关键信息)
+    logger.level('PARAMETER', no=22, color="<yellow>", icon='@')
     keyinfo_format = (
         '<green>{time:YYYY-MM-DD HH:mm:ss}</green> | '
-        '<white>{level:>10}</white> | '
+        '<white>{level:>12}</white> | '
         '<blue>===> {message}:</blue> <white>{extra[value]}</white>'
     )
     logger.add(
         sink=sys.stderr,
-        level="KEYINFO",
-        filter=lambda record: record["level"].name == "KEYINFO", format=keyinfo_format)
+        level="PARAMETER",
+        filter=lambda record: record["level"].name == "PARAMETER", format=keyinfo_format)
     logger.add(
         sink=log_file,
-        level="KEYINFO",
+        level="PARAMETER",
         colorize=False,
-        filter=lambda record: record["level"].name == "KEYINFO", format=keyinfo_format)
+        filter=lambda record: record["level"].name == "PARAMETER", format=keyinfo_format)
 
     # 重定向系统输出到loguru
     redirect_logger = StreamToLoguru("INFO")
@@ -258,21 +275,25 @@ def setup_logger(work_dir, filename='log.txt'):
     sys.stdout = redirect_logger
 
 
-def format_string(string, mode='heading'):
-    if mode == 'heading':
+def format_string(string, mode='HEADING'):
+    if mode == 'HEADING':
         return f' {string.upper()} '.center(80, '-')
 
-    elif mode == 'subheading':
+    elif mode == 'SUBHEADING' or mode == 'SUBHEADING2':
         return f' {string.title()} '.center(80, '-')
     
 
-def heading(string):
-    logger.log('HEADING', format_string(string, mode='heading'))
+def printHeading(string):
+    logger.log('HEADING', format_string(string, mode='HEADING'))
 
 
-def subheading(string):
-    logger.log('SUBHEADING', format_string(string, mode='subheading'))
+def printSubheading(string):
+    logger.log('SUBHEADING', format_string(string, mode='SUBHEADING'))
 
 
-def keyinfo(key_string, value_string=''):
-    logger.log('KEYINFO', key_string, value=value_string)
+def printSubheading2(string):
+    logger.log('SUBHEADING2', format_string(string, mode='SUBHEADING2'))
+
+
+def printArgs(key_string, value_string=''):
+    logger.log('PARAMETER', key_string, value=value_string)

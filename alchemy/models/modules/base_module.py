@@ -6,10 +6,10 @@ import torch.nn as nn
 
 from copy import deepcopy
 
-from alchemy.models.modules.layers import convolution, normalization, activate
+from alchemy.models.modules.layers import convFunc, normalFucn, actFunc
 
 
-def base_module(in_channels=3, 
+def baseModule(in_channels=3, 
                 out_channels=16, 
                 kernel_size=3, 
                 stride=1, 
@@ -51,7 +51,7 @@ def base_module(in_channels=3,
                 dilation=dilation
             )
 
-            modules.append(convolution(cfg))
+            modules.append(convFunc(cfg))
         
         elif layer_type == 'norm':
             if norm_before_conv:  # norm层在卷积之前
@@ -66,11 +66,11 @@ def base_module(in_channels=3,
             else:
                 cfg.update(num_features=norm_channels)
 
-            modules.append(normalization(cfg))
+            modules.append(normalFucn(cfg))
         
         elif layer_type == 'act':
             cfg = deepcopy(act_cfg)
-            modules.append(activate(cfg))
+            modules.append(actFunc(cfg))
         else:
             raise NotImplementedError(
                 f'"{layer_type}" type layer is not supported, "[conv, norm, act, pool]" is currently supported'

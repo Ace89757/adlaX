@@ -5,7 +5,7 @@
 import torch.nn as nn
 
 from alchemy.registry import MODELs
-from alchemy.models.modules import base_module
+from alchemy.models.modules import baseModule
 
 
 __all__ = ['ResNet']
@@ -53,7 +53,7 @@ class BasicBlock(nn.Module):
             raise NotImplementedError('Dilation > 1 not supported in BasicBlock')
 
         # conv3 + norm + act
-        self.layer1 = base_module(
+        self.layer1 = baseModule(
             inplanes, 
             planels, 
             kernel_size=3, 
@@ -67,7 +67,7 @@ class BasicBlock(nn.Module):
             orders=('conv', 'norm', 'act'))
         
         # conv3 + norm
-        self.layer2 = base_module(
+        self.layer2 = baseModule(
             planels,
             planels, 
             kernel_size=3, 
@@ -80,7 +80,7 @@ class BasicBlock(nn.Module):
             act_cfg=act_cfg,
             orders=('conv', 'norm'))
         
-        self.act = base_module(act_cfg=act_cfg, orders=('act', ))
+        self.act = baseModule(act_cfg=act_cfg, orders=('act', ))
 
         # down sample
         if downsample is None:
@@ -141,7 +141,7 @@ class Bottleneck(nn.Module):
         hidden_planes = int(planes * (base_planes / 64.0)) * groups
 
         # conv1x1 + norm + act
-        self.layer1 = base_module(
+        self.layer1 = baseModule(
             inplanes,
             hidden_planes,
             kernel_size=1,
@@ -154,7 +154,7 @@ class Bottleneck(nn.Module):
         )
 
         # conv3x3 + norm + act
-        self.layer2 = base_module(
+        self.layer2 = baseModule(
             hidden_planes,
             hidden_planes,
             kernel_size=3,
@@ -169,7 +169,7 @@ class Bottleneck(nn.Module):
         )
 
         # conv1x1 + norm
-        self.layer3 = base_module(
+        self.layer3 = baseModule(
             hidden_planes,
             int(planes * self.expansion),
             kernel_size=1, 
@@ -180,7 +180,7 @@ class Bottleneck(nn.Module):
             orders=('conv', 'norm')
         )
 
-        self.act = base_module(act_cfg=act_cfg, orders=('act', ))
+        self.act = baseModule(act_cfg=act_cfg, orders=('act', ))
 
         # down sample
         if downsample is None:
@@ -239,7 +239,7 @@ class ResNet(nn.Module):
         self.stage_block, self.num_stage_stacks = self.configure[depth]
 
         # stage0: 2x
-        self.c0 = base_module(
+        self.c0 = baseModule(
             in_channels=3,
             out_channels=self.in_channels,
             kernel_size=7,
@@ -278,7 +278,7 @@ class ResNet(nn.Module):
         # downsample
         downsample = None
         if stride != 1 or self.in_channels != expansion_planes:
-            downsample = base_module(
+            downsample = baseModule(
                 self.in_channels, 
                 expansion_planes, 
                 kernel_size=1, 
@@ -327,7 +327,7 @@ class ResNet(nn.Module):
         而对于全连接网络, 如果使用了ReLU等激活函数, 通常也会使用fan_in, 因为ReLU在正区间内是线性的, 而fan_in正是为了保持输入的方差.
 
         """
-        # activate type
+        # actFunc type
         act_type = self.act_cfg.get('type', None)
         if act_type not in ['relu', 'leaky_relu']:
             act_type = None

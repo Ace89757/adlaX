@@ -6,7 +6,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 from alchemy.registry import MODELs
-from alchemy.models.modules import base_module
+from alchemy.models.modules import baseModule
 
 
 __all__ = ['FPN']
@@ -62,10 +62,10 @@ class FPN(nn.Module):
             assert end_level < self.num_ins
 
         # 构建lateral层
-        self.lateral_layers = self._build_lateral_layers()
+        self.lateral_layers = self._lateralLayers()
 
         # 构建fpn层
-        self.fpn_layers = self._build_fpn_layers()
+        self.fpn_layers = self._fpnLayers()
 
         # 判断是否需要额外的层
         self.add_extra_layers = False
@@ -80,17 +80,17 @@ class FPN(nn.Module):
         self.extra_layers_source = extra_layers_source
 
         # 构建额外层
-        self._build_extra_layers()
+        self._extraLayers()
 
         # 构建上采样层
-        self.upsample_layers = self._build_upsample_layers()
+        self.upsample_layers = self._unsampleLayers()
 
-    def _build_lateral_layers(self):
+    def _lateralLayers(self):
         lateral_layers = nn.ModuleList()
 
         for i in range(self.start_level, self.backbone_end_level):
             lateral_layers.append(
-                base_module(
+                baseModule(
                     self.in_channels[i],
                     self.out_channels,
                     kernel_size=1,
@@ -104,13 +104,13 @@ class FPN(nn.Module):
         
         return lateral_layers
     
-    def _build_fpn_layers(self):
+    def _fpnLayers(self):
         fpn_layers = nn.ModuleList()
 
         for out_ind in self.out_indices:
             if out_ind < self.num_ins:
                 fpn_layers.append(
-                    base_module(
+                    baseModule(
                         self.out_channels,
                         self.out_channels,
                         kernel_size=3,
@@ -124,7 +124,7 @@ class FPN(nn.Module):
         
         return fpn_layers
     
-    def _build_extra_layers(self):
+    def _extraLayers(self):
         if self.add_extra_layers and self.num_extra_levels > 0:
             for i in range(self.num_extra_levels):
                 if i == 0 and self.extra_layers_source == 'on_input':
@@ -132,7 +132,7 @@ class FPN(nn.Module):
                 else:
                     in_channels = self.out_channels
                 
-                extra_fpn_conv = base_module(
+                extra_fpn_conv = baseModule(
                     in_channels,
                     self.out_channels,
                     kernel_size=3,
@@ -144,7 +144,7 @@ class FPN(nn.Module):
                 
                 self.fpn_layers.append(extra_fpn_conv)
 
-    def _build_upsample_layers(self):
+    def _unsampleLayers(self):
         upsample_layers = nn.ModuleList()
 
         upsample_type = self.upsample_cfg.get('type', 'nearest')
